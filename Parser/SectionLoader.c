@@ -64,6 +64,8 @@ void LoadSections(unsigned char* Exec, COFFHeader header) {
         exit(1);
     }
     memcpy(DatSect, &Exec[DatHeader.s_scnptr], DatHeader.s_size);
+    #ifndef RDMC
     ExecMain(&Exec[DecHeader.s_scnptr], DecHeader.s_size, DecHeader.s_scnptr, DatSect, DatHeader.s_size);
+    #endif
     free(DatSect);
 }
