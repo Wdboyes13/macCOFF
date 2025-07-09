@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "*.dbclient-js": "javascript",
+        "*.s": "arm",
+        "chrono": "c",
+        "ranges": "c",
+        "variant": "c",
+        "sectionheader.h": "c",
+        "helpers.h": "c",
+        "string.h": "c",
+        "executor.h": "c",
+        "fileheader.h": "c",
+        "stdint.h": "c",
+        "stdlib.h": "c"
+    }
+}
