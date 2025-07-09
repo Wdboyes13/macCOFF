@@ -6,6 +6,7 @@
 #include "Writers.h"
 #include "Readers.h"
 #include "InsGen.h"
+#include <stdbool.h>
 
 int count_lines_until_data(FILE *f) {
     int lines = 0;
@@ -99,13 +100,31 @@ int main(int argc, char* argv[]){
     char *line = NULL;
     size_t len = 0;
     int currsect = 1; // .text
+    bool TextDeclared = false;
+    bool DataDeclared = false;
 
     while (getline(&line, &len, f) != -1) {
         printf("Read line: %s\n", line);
         line[strcspn(line, "\r\n")] = 0;
         if (strcmp(line, "") == 0) continue;
         if (strcmp(line, ".section .data") == 0 || strcmp(line, ".data") == 0){
-            currsect = 2; // Switch to context .data
+            if (!DataDeclared){
+                currsect = 2; // Switch to context .data
+                DataDeclared = true;
+            } else {
+                fprintf(stderr, "Error: Redeclared section .data");
+                exit(1);
+            }
+            continue;
+        }
+        if (strcmp(line, ".section .text") == 0 || strcmp(line, ".text") == 0){
+            if (!TextDeclared){
+                currsect = 1; // Switch to context .text
+                TextDeclared = true;
+            } else {
+                fprintf(stderr, "Error: Redeclared section .text");
+                exit(1);
+            }
             continue;
         }
         if (currsect == 1){
