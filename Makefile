@@ -6,7 +6,7 @@ SRCS := Parser/BinToHex.c Executor/ExecMain.c \
 		
 RDMC_SRCS := Parser/BinToHex.c Parser/HeaderLoader.c Parser/SectionLoader.c Parser/Helpers.c 
 
-AS_SRCS := $(wildcard Assembler-WIP/*.c)
+AS_SRCS := $(wildcard Assembler/*.c)
 
 OBJS := $(patsubst %.c,%.o,$(SRCS))
 RDMC_OBJS := $(patsubst %.c,%.o,$(RDMC_SRCS))
