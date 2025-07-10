@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "../privinc/SectionHeader.h"
-#include "../privinc/FileHeader.h"
+#include "../include/SectionHeader.h"
+#include "../include/FileHeader.h"
 int main(){
     printf("%lu\n", sizeof(long));
     printf("%lu\n", sizeof(COFFSectionHeader));

@@ -11,6 +11,8 @@
         "executor.h": "c",
         "fileheader.h": "c",
         "stdint.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "calls.h": "c",
+        "maccoff.h": "c"
     }
 }

@@ -1,6 +1,6 @@
-#include "../privinc/SectionHeader.h"
-#include "../privinc/FileHeader.h"
-#include "../privinc/Helpers.h"
+#include "../include/SectionHeader.h"
+#include "../include/FileHeader.h"
+#include "../include/Helpers.h"
 #include "../Executor/Executor.h"
 #include <string.h>
 #include <stdio.h>

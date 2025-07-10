@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "../privinc/FileHeader.h"
-#include "../privinc/SectionHeader.h"
+#include "../include/FileHeader.h"
+#include "../include/SectionHeader.h"
 
 
 void write_le16(FILE* f, uint16_t val) {

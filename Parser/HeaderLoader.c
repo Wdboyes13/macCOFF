@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "../privinc/FileHeader.h"
-#include "../privinc/SectionHeader.h"
-#include "../privinc/Helpers.h"
+#include "../include/FileHeader.h"
+#include "../include/SectionHeader.h"
+#include "../include/Helpers.h"
 
 #define Set16(Field, Text) \
     Field = read_le16(&Exec[index]); \

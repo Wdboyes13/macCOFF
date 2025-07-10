@@ -6,7 +6,7 @@
 #include "Writers.h"
 #include "InsGen.h"
 #include <stdbool.h>
-#include "../ArenaAlloc.h"
+#include "../include/ArenaAlloc.h"
 
 int count_lines_until_data(FILE *f) {
     int lines = 0;

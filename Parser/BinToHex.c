@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../privinc/macCOFF.h"
+#include "../include/macCOFF.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {

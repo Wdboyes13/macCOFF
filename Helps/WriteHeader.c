@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <time.h>
-#include "../privinc/FileHeader.h"
-#include "../privinc/SectionHeader.h"
+#include "../include/FileHeader.h"
+#include "../include/SectionHeader.h"
 
 void write_le16(FILE* f, uint16_t val) {
     uint8_t b[2] = { val & 0xff, (val >> 8) & 0xff };
