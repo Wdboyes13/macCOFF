@@ -19,6 +19,7 @@ rule link
 
 rule clean
     command = rm -f $in
+    description = RM $in
 
 rule gitstage
     command = git add .

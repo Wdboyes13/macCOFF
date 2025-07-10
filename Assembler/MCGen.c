@@ -6,6 +6,7 @@
 #include "Writers.h"
 #include "InsGen.h"
 #include <stdbool.h>
+#include "../ArenaAlloc.h"
 
 int count_lines_until_data(FILE *f) {
     int lines = 0;
@@ -129,11 +130,12 @@ int main(int argc, char* argv[]){
             continue;
         }
         if (currsect == 1){
+            Arena* arena = ArenaAlloc(MAX_LEN * MAX_LEN);
             char* tok[MAX_LEN] = {0};
             for (int i = 0; i < MAX_LEN; i++){
-                tok[i] = malloc(MAX_LEN);
+                tok[i] = ArenaGetPtr(arena, MAX_LEN);
                 if (tok[i] == NULL){
-                    perror("Malloc Failed\n");
+                    perror("Allocation Failed\n");
                     exit(1);
                 } else {
                     printf("Allocated tok[%d]\n", i);
@@ -205,6 +207,7 @@ int main(int argc, char* argv[]){
                 free(line);
                 exit(1);
             }
+            FreeArena(&arena);
         }
         if (currsect == 2){
             char* tok = NULL;
