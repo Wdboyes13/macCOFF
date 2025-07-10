@@ -1,0 +1,68 @@
+cc = wclang
+cflags = -O2 -Wall
+cflags1 = $cflags -DRDMC
+ldflags =
+
+
+
+rule cc
+    command = $cc $cflags -c $in -o $out
+    description = CC $out
+
+rule cc1
+    command = $cc $cflags1 -c $in -o $out
+    description = CC $out
+
+rule link
+    command = $cc $in -o $out $ldflags
+    description = LD $out
+
+rule clean
+    command = rm -f $in
+
+rule gitstage
+    command = git add .
+    description = STAGE
+
+rule gitcommit
+    command = git commit -m Updated
+    description = COMMIT 
+
+rule gitpush
+    command = git push
+    description = PUSH
+
+
+
+build Assembler/InsGen.o: cc Assembler/InsGen.c 
+build Assembler/MCGen.o: cc Assembler/MCGen.c 
+build Assembler/Readers.o: cc Assembler/Readers.c 
+build Assembler/Writers.o: cc Assembler/Writers.c 
+
+build Parser/BinToHex.o: cc Parser/BinToHex.c 
+build Executor/ExecMain.o: cc Executor/ExecMain.c
+build Parser/HeaderLoader.o: cc Parser/HeaderLoader.c
+build Parser/SectionLoader.o: cc Parser/SectionLoader.c
+build Parser/Helpers.o: cc Parser/Helpers.c
+
+build Parser/SectionLoader.o.2: cc1 Parser/SectionLoader.c
+
+
+
+build asmc: link Assembler/InsGen.o Assembler/MCGen.o Assembler/Readers.o Assembler/Writers.o
+build readMC: link Parser/BinToHex.o Parser/HeaderLoader.o Parser/SectionLoader.o.2 Parser/Helpers.o
+build macCOFF: link Parser/BinToHex.o Executor/ExecMain.o Parser/HeaderLoader.o Parser/SectionLoader.o Parser/Helpers.o
+
+build asmc_clean: clean Assembler/InsGen.o Assembler/MCGen.o Assembler/Readers.o Assembler/Writers.o asmc
+build macCOFF_clean: clean Parser/BinToHex.o Executor/ExecMain.o Parser/HeaderLoader.o Parser/SectionLoader.o Parser/Helpers.o macCOFF
+build readMC_clean: clean Parser/BinToHex.o Parser/HeaderLoader.o Parser/SectionLoader.o.2 Parser/Helpers.o readMC
+
+build gits: gitstage
+build gitc: gitcommit | gits
+build gitp: gitpush | gitc
+
+build git: phony gitp
+build all: phony asmc macCOFF readMC
+build clean: phony asmc_clean macCOFF_clean readMC_clean
+
+default all

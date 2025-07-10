@@ -4,7 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include "Writers.h"
-#include "Readers.h"
 #include "InsGen.h"
 #include <stdbool.h>
 
@@ -103,6 +102,8 @@ int main(int argc, char* argv[]){
     bool TextDeclared = false;
     bool DataDeclared = false;
 
+    #define MAX_LEN 6
+
     while (getline(&line, &len, f) != -1) {
         printf("Read line: %s\n", line);
         line[strcspn(line, "\r\n")] = 0;
@@ -128,37 +129,81 @@ int main(int argc, char* argv[]){
             continue;
         }
         if (currsect == 1){
-            char* tok = NULL;
-            char* tok1 = NULL;
-            char* tok2 = NULL;
-            tok = strtok(line, delim);
-            if (tok != NULL){
-                tok1 = strtok(NULL, delim);
-                if (tok1 != NULL){
-                    tok2 = strtok(NULL, delim);
-                } 
+            char* tok[MAX_LEN] = {0};
+            for (int i = 0; i < MAX_LEN; i++){
+                tok[i] = malloc(MAX_LEN);
+                if (tok[i] == NULL){
+                    perror("Malloc Failed\n");
+                    exit(1);
+                } else {
+                    printf("Allocated tok[%d]\n", i);
+                }
             }
-            if (strcmp(tok, "movz") == 0){
-                if (tok1 != NULL && tok2 != NULL){
+            tok[0] = strtok(line, delim);
+            printf("Token %d : %s\n", 0, tok[0]);
+            for (int i = 1; tok[i - 1] != NULL && i <= MAX_LEN; i++){
+                tok[i] = strtok(NULL, delim);
+                printf("Token %d : %s\n", i, tok[i]);
+            }
+            printf("Accesing tok[0]\n");
+            if (tok[0] == NULL) exit(1);
+            if (strcmp(tok[0], "movz") == 0){
+                if (tok[1] != NULL && tok[2] != NULL){
                     uint8_t rd = -1;
                     uint16_t imm16 = -1;
-                    if (tok1[0] == 'x'){
-                        rd = atoi(tok1 + 1);
+                    uint8_t hw = 0;
+                    if (tok[1][0] == 'x'){
+                        rd = atoi(tok[1] + 1);
                     }
-                    if (tok2[0] == '#'){
-                        imm16 = (int)strtol(tok2 + 1, NULL, 0);
+                    if (tok[2][0] == '#'){
+                        imm16 = (int)strtol(tok[2] + 1, NULL, 0);
                     }
+                    if (tok[3] != NULL && strcmp(tok[3], "lsl") == 0){
+                        if (tok[4][0] == '#'){
+                            hw = (int)strtol(tok[4] + 1, NULL, 0);
+                        }
+                    } 
                     if (rd >= 0 && imm16 >= 0){
-                        uint32_t val = get_movz_bytes(rd, imm16, 0);
+                        uint32_t val = get_movz_bytes(rd, imm16, hw / 16);
                         fwrite(&val, sizeof(val), 1, o);
                         bytes += 4;
                     }
                 }
             }
-            if (strcmp(tok, "svc") == 0){
+            else if (strcmp(tok[0], "movk") == 0){
+                if (tok[1] != NULL && tok[2] != NULL){
+                    uint8_t rd = -1;
+                    uint16_t imm16 = -1;
+                    uint8_t hw = 0;
+                    if (tok[1][0] == 'x'){
+                        rd = atoi(tok[1] + 1);
+                    }
+                    if (tok[2][0] == '#'){
+                        imm16 = (int)strtol(tok[2] + 1, NULL, 0);
+                    }
+                    if (tok[3] != NULL && strcmp(tok[3], "lsl") == 0){
+                        if (tok[4][0] == '#'){
+                            hw = (int)strtol(tok[4] + 1, NULL, 0);
+                        }
+                    } 
+                    if (rd >= 0 && imm16 >= 0){
+                        printf("Halfowrd = %c\n", hw);
+                        uint32_t val = get_movk_bytes(rd, imm16, hw / 16);
+                        fwrite(&val, sizeof(val), 1, o);
+                        bytes += 4;
+                    }
+                }
+            }
+            else if (strcmp(tok[0], "svc") == 0){
                 uint32_t val = get_svc();
                 fwrite(&val, sizeof(val), 1, o);
                 bytes += 4;
+            } else {
+                fprintf(stderr, "Error: Unrecognized Token: %s", tok[0]);
+                fclose(f);
+                fclose(o);
+                free(line);
+                exit(1);
             }
         }
         if (currsect == 2){
@@ -225,5 +270,6 @@ int main(int argc, char* argv[]){
     free(line);
 
     fclose(f);
+    fclose(o);
     return 0;
 }

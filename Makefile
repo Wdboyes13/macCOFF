@@ -1,4 +1,4 @@
-CC ?= wclang
+CC = /opt/homebrew/opt/llvm/bin/clang
 RM := rm -f
 SRCS := Parser/BinToHex.c Executor/ExecMain.c \
 		Parser/HeaderLoader.c Parser/SectionLoader.c \
@@ -16,8 +16,8 @@ OUT := macCOFF
 RDMC := readMC
 AS := asMC
 
-CFLAGS= -O2
-LDFLAGS=
+CFLAGS= -g -O0 -fsanitize=address
+LDFLAGS= -fsanitize=address
 
 main:
 	$(MAKE) all
